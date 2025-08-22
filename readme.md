@@ -28,14 +28,16 @@ Restart the PostgreSQL server:
 ###  Configuring pg_hba.conf (On Primary Server)
 In the pg_hba.conf file, add the following entry to allow the subscriber server to connect using the replication user:
 
-    host replication replicator 10.7.22.18/32 md5
+    host replication replicator <subscriber_ip>/32 md5
 
 Reload the PostgreSQL configuration to apply the changes:
 
-    SELECT pg_reload_conf();
+    sudo systemctl restart postresql@13-main
 
 ### Creating a Publication (On Primary Server)
 
+    sudo -u postgres psql
+    \c <primary_database>
     CREATE PUBLICATION my_publication FOR ALL TABLES;
 
 ### Setting Up the Subscriber Server
