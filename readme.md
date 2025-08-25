@@ -40,6 +40,32 @@ Reload the PostgreSQL configuration to apply the changes:
     \c <primary_database>
     CREATE PUBLICATION my_publication FOR ALL TABLES;
 
+### Ensure all tables without a PRIMARY KEY have a REPLICA IDENTITY
+
+    DO $$
+    DECLARE
+        r RECORD;
+    BEGIN
+        FOR r IN
+            SELECT c.relname AS table_name
+            FROM pg_class c
+            JOIN pg_namespace n ON n.oid = c.relnamespace
+            LEFT JOIN (
+                SELECT conrelid
+                FROM pg_constraint
+                WHERE contype = 'p'
+            ) pk ON pk.conrelid = c.oid
+            WHERE c.relkind = 'r'
+              AND n.nspname = 'public'
+              AND pk.conrelid IS NULL
+        LOOP
+            EXECUTE 'ALTER TABLE ' || quote_ident(r.table_name) || ' REPLICA IDENTITY FULL;';
+        END LOOP;
+    END;
+    $$;
+
+    
+
 ### Setting Up the Subscriber Server
 On the subscriber server, you’ll create a subscription to receive data from the publication created on the primary server.
 
