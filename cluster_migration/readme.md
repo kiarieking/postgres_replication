@@ -18,12 +18,6 @@ Expect output:
     15  main    5432 down   postgres  /var/lib/postgresql/15/main /var/log/postgresql/postgresql-15-main.log
     17  main    5433 online postgres  /var/lib/postgresql/17/main /var/log/postgresql/postgresql-17-main.log    
 
-### Change authentication to trust on postgresql@13-main/pg_hba.conf to avoid password prompt. Remember to change it back once done.
-
-
-    # Database administrative login by Unix domain socket
-    local   all             postgres                                trust
-
 
 ### Stop both clusters
 
