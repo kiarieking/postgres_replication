@@ -37,12 +37,13 @@ Expect output:
 
 ### Run the upgrade using the command below.
 
-    sudo -u postgres pg_upgrade \
-    -b /usr/lib/postgresql/13/bin \
-    -B /usr/lib/postgresql/17/bin \
-    -d /var/lib/postgresql/13/main \
-    -D /var/lib/postgresql/17/main \
-    -U postgres
+    sudo -u postgres /usr/lib/postgresql/17/bin/pg_upgrade \
+        -b /usr/lib/postgresql/13/bin \
+        -B /usr/lib/postgresql/17/bin \
+        -d /var/lib/postgresql/13/main \
+        -D /var/lib/postgresql/17/main \
+        -o "-c config_file=/etc/postgresql/13/main/postgresql.conf" \
+        -O "-c config_file=/etc/postgresql/17/main/postgresql.conf"
 
 Expected output snippet.
 
