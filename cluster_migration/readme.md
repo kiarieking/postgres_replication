@@ -85,3 +85,18 @@ Expected output snippet.
     Checking for extension updates                                ok
 
     Upgrade Complete
+
+If you get a notification that looks like ;
+
+    Your installation contains extensions that should be updated
+    with the ALTER EXTENSION command.  The file
+    update_extensions.sql
+    when executed by psql by the database superuser will update
+    these extensions.
+
+Follow the step below ;
+
+      sudo -u postgres psql
+      
+      \i path/to/update_extensions.sql
+ 
