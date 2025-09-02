@@ -67,6 +67,23 @@ Reload the PostgreSQL configuration to apply the changes:
     
 
 ### Setting Up the Subscriber Server
+Create a database with only the schema of the primary server. Create a dump on the primary server and download it to the local.
+
+    ssh username@primary-server-domain
+    pg_dump -U your_username -d your_database -F c -f your_database.dump
+
+On your local pc download the your_database.dump file and create a database with the schema only from the your_database.dump.
+
+    scp username@primary-server-domain /tmp
+    pg_restore --schema-only -U postgres_user -d replica_database ~/tmp/your_database.dump
+
+create a ssh tunnel to connect from your local to the database on the primary on the primary port.
+
+    ssh -f -N -L 5433:localhost:5432 username@primary-ip
+
+    #5433 - free port on local
+    #5432 - postgres port on primary server
+    
 On the subscriber server, you’ll create a subscription to receive data from the publication created on the primary server.
 
     sudo -u postgres psql
@@ -74,7 +91,7 @@ On the subscriber server, you’ll create a subscription to receive data from th
     \c replica_database
 
     CREATE SUBSCRIPTION my_subscription
-    CONNECTION 'host=10.7.22.17 port=5432 dbname=mydb user=replicator password=replicator_password'
+    CONNECTION 'host=localhost port=5433 dbname=primary_db user=replicator password=replicator_password'
     PUBLICATION my_publication;
 
 ###  Managing Subscriptions
