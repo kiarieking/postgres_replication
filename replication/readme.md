@@ -28,7 +28,7 @@ Restart the PostgreSQL server:
 ###  Configuring pg_hba.conf (On Primary Server)
 In the pg_hba.conf file, add the following entry to allow the subscriber server to connect using the replication user:
 
-    host replication replicator <subscriber_ip>/32 md5
+    host replication replicator <subscriber_ip>/32 peer
 
 Reload the PostgreSQL configuration to apply the changes:
 
