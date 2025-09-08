@@ -34,4 +34,58 @@ Check your disk usage to ensure you have enough disk spqce for the swap memory.
 The device with `/` in the Mounted on column is our disk in this case. 
 
 ## Step 3 – Creating a Swap File
+We will allocate a file of the size that we want called swapfile in our root (/) directory.
+The best way of creating a swap file is with the fallocate program.
 
+    sudo fallocate -l 1G /swapfile
+
+Verify that the correct amount of space was reserved by typing:
+
+    ls -lh /swapfile
+
+    Output
+    -rw-r--r-- 1 root root 1.0G Aug 23 11:14 /swapfile
+
+## Step 4 – Enabling the Swap File
+Lock down the permissions of the file so that only users with root privileges can read the contents. This prevents normal users from being able to access the file, which would have significant security implications.
+
+    sudo chmod 600 /swapfile
+
+Verify the permissions.
+
+    ls -lh /swapfile
+
+    Output
+    -rw------- 1 root root 1.0G Aug 23 11:14 /swapfile
+
+Mark the file as swap space.
+
+    sudo mkswap /swapfile
+
+    Output
+    Setting up swapspace version 1, size = 1024 MiB (1073737728 bytes)
+    no label, UUID=6e965805-2ab9-450f-aed6-577e74089dbf
+
+Enable the swap file.
+
+    sudo swapon /swapfile
+
+Verify that the swap is available.
+
+    sudo swapon --show
+
+    Output
+    NAME      TYPE  SIZE USED PRIO
+    /swapfile file 1024M   0B   -2
+
+## Step 5 – Making the Swap File Permanent
+Our recent changes have enabled the swap file for the current session. 
+We can make this permanent by adding the swap file to our `/etc/fstab` file.
+
+Back up the `/etc/fstab` file in case anything goes wrong.
+
+    sudo cp /etc/fstab /etc/fstab.bak
+
+Add the swap file information to the end of your `/etc/fstab`.
+
+    echo '/swapfile none swap sw 0 0' | sudo tee -a /etc/fstab
